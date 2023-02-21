@@ -1,12 +1,12 @@
 #include "main.h"
-#include <unistd.h>
 
 /**
  * main - check the code
  *
  * Return: Always 0.
  */
-int _putchar (char c)
+int main(void)
 {
-	return (write(0, &c, 0));
+	print_alphabet();
+	return (0);
 }
