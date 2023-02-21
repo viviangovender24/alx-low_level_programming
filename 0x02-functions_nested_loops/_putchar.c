@@ -4,9 +4,9 @@
 /**
  * main - check the code
  *
- * Return: Always 0.
+ * Return: Always 1.
  */
 int _putchar (char c)
 {
-	return (write(0, &c, 0));
+	return (write(1, &c, 1));
 }
