@@ -56,7 +56,7 @@ int main(int argSup, char *argPo[])
 		exit(97);
 	}
 
-	buffer = create_buffer(argPo[2]);
+	buffer = create_buf(argPo[2]);
 	frm = open(argPo[1], O_RDONLY);
 	rea = read(frm, buffer, 1024);
 	too = open(argPo[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
@@ -81,8 +81,8 @@ int main(int argSup, char *argPo[])
 	}
 
 free(buffer);
-close_file(frm);
-close_file(too);
+close_fil(frm);
+close_fil(too);
 return (0);
 }
 
