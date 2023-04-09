@@ -38,5 +38,53 @@ void close_fil(int f)
 	}
 }
 
+/**
+* main - Copies contents file
+* @argSup: arguments supplied to the program.
+* @argPo:array of pointers to the argument
+* Return: 0 on success
+*/
+int main(int argSup, char *argPo[])
+{
+
+	int frm, too, rea, wrt;
+	char *buffer;
+
+	if (argSup != 3)
+	{
+		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+		exit(97);
+	}
+
+	buffer = create_buffer(argPo[2]);
+	frm = open(argPo[1], O_RDONLY);
+	rea = read(frm, buffer, 1024);
+	too = open(argPo[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	while (rea > 0)
+	{
+		if (frm == -1 || rea == -1)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argPo[1]);
+			free(buffer);
+			exit(98);
+		}
+
+		wrt = write(too, buffer, rea);
+		if (too == -1 || wrt == -1)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argPo[2]);
+			free(buffer);
+			exit(99);
+		}
+		rea = read(frm, buffer, 1024);
+		too = open(argPo[2], O_WRONLY | O_APPEND);
+	}
+
+free(buffer);
+close_file(frm);
+close_file(too);
+return (0);
+}
+
 char *create_buf(char *fil);
 void close_fil(int f);
