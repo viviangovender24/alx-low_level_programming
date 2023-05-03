@@ -8,4 +8,4 @@
 * [5-flip_bits.c] function that returns the number of bits need to be swopped to get from one number to another.
 
 * [100-get_endianness.c] function checks endianness.
-* [101-password] File containing the password
+* [101-password] File containing the password required
