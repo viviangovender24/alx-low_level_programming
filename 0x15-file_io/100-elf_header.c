@@ -11,7 +11,6 @@ void print_magic(unsigned char *e_id);
 void print_class(unsigned char *e_id);
 void print_data(unsigned char *e_id);
 void print_version(unsigned char *e_id);
-void print_abi(unsigned char *e_id);
 void close_e(int e);
 
 /**
@@ -26,10 +25,10 @@ void check_e(unsigned char *e_id)
 
 	for (ind = 0; ind < 4; ind++)
 	{
-		if (e_ident[ind] != 127 &&
-		    e_ident[ind] != 'E' &&
-		    e_ident[ind] != 'L' &&
-		    e_ident[ind] != 'F')
+		if (e_id[ind] != 127 &&
+		    e_id[ind] != 'E' &&
+		    e_id[ind] != 'L' &&
+		    e_id[ind] != 'F')
 		{
 			dprintf(STDERR_FILENO, "Error: Not an ELF file\n");
 			exit(98);
@@ -49,9 +48,9 @@ void print_magic(unsigned char *e_id)
 
 	printf("  Magic:   ");
 
-	for (ind = 0; ind < EI_NIDENT; ind+)
+	for (ind = 0; ind < EI_NIDENT; ind++)
 	{
-		printf("%02x", e_ident[index]);
+		printf("%02x", e_id[ind]);
 
 		if (ind == EI_NIDENT - 1)
 			printf("\n");
@@ -68,7 +67,7 @@ void print_class(unsigned char *e_id)
 {
 	printf("  Class:                             ");
 
-	switch (e_ident[EI_CLASS])
+	switch (e_id[EI_CLASS])
 	{
 	case ELFCLASSNONE:
 		printf("none\n");
@@ -80,7 +79,7 @@ void print_class(unsigned char *e_id)
 		printf("ELF64\n");
 		break;
 	default:
-		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+		printf("<unknown: %x>\n", e_id[EI_CLASS]);
 	}
 }
 
@@ -104,7 +103,7 @@ void print_data(unsigned char *e_id)
 		printf("2's complement, big endian\n");
 		break;
 	default:
-		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+		printf("<unknown: %x>\n", e_id[EI_CLASS]);
 	}
 }
 
@@ -129,12 +128,12 @@ void print_version(unsigned char *e_id)
 }
 
 
-void close_elf(int elf)
+void close_e(int e)
 {
-	if (close(elf) == -1)
+	if (close(e) == -1)
 	{
 		dprintf(STDERR_FILENO,
-			"Error: Can't close fd %d\n", elf);
+			"Error: Can't close fd %d\n", e);
 		exit(98);
 	}
 }
@@ -164,7 +163,7 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 	header = malloc(sizeof(Elf64_Ehdr));
 	if (header == NULL)
 	{
-		close_elf(o);
+		close_e(o);
 		dprintf(STDERR_FILENO, "Error: Can't read file %s\n", argv[1]);
 		exit(98);
 	}
@@ -172,21 +171,18 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 	if (r == -1)
 	{
 		free(header);
-		close_elf(o);
+		close_e(o);
 		dprintf(STDERR_FILENO, "Error: `%s`: No such file\n", argv[1]);
 		exit(98);
 	}
 
-	check_e(header->e_id);
+	check_e(header->e_ident);
 	printf("ELF Header:\n");
-	print_magic(header->e_id);
-	print_class(header->e_id);
-	print_data(header->e_id);
-	print_abi(header->e_id);
-	print_type(header->e_type, header->e_id);
-	print_entry(header->e_entry, header->e_id);
+	print_magic(header->e_ident);
+	print_class(header->e_ident);
+	print_data(header->e_ident);
 
 	free(header);
-	close_elf(o);
+	close_e(o);
 	return (0);
 }
